@@ -9,7 +9,12 @@ async function checkAndSendRequest() {
             headers: { Authorization: `Bearer ${TOKEN}` }
         });
 
-        const items = response.data;
+        const items = Array.isArray(response.data) ? response.data : response.data.items;
+        
+        if (!Array.isArray(items)) {
+            console.error('Ошибка: Неверный формат данных', response.data);
+            return;
+        }
         
         for (const item of items) {
             if (item.min_price >= 1 && item.min_price <= 300) {
@@ -35,3 +40,4 @@ async function checkAndSendRequest() {
 }
 
 setInterval(checkAndSendRequest, 5000);
+
